@@ -1,0 +1,15 @@
+pyramid
+pyramid-beaker
+pyramid-jinja2
+pyramid-tm
+transaction
+SQLAlchemy
+SQLAlchemy-Utils
+zope.sqlalchemy
+WTForms
+WTForms-Alchemy
+WTForms-Components
+alembic
+cornice
+waitress
+python-dateutil

@@ -1,0 +1,22 @@
+.DS_Store
+._*
+*~
+*.db
+*.sqlite
+*.pyc
+*.swp
+.idea
+.vagrant
+/env
+/feedduty*.iml
+
+# build stuff
+build/
+debian/files
+debian/python-module-stampdir/
+debian/*.log
+debian/*substvars
+debian/*.debhelper
+debian/tmp/*
+debian/feedduty/*
+/*.egg-info

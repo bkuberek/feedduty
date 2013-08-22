@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>Feed Duty API</title>
+  <link rel="icon" href="{{ request.static_path('feedduty:static/images/favicon.png') }}">
+  <!--[if IE]>
+  <link rel="shortcut icon" href="{{ request.static_path('feedduty:static/images/favicon.ico') }}"><![endif]-->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144"
+        href="{{ request.static_path('feedduty:static/images/touch-icon-144.png') }}">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114"
+        href="{{ request.static_path('feedduty:static/images/touch-icon-114.png') }}">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72"
+        href="{{ request.static_path('feedduty:static/images/touch-icon-72.png') }}">
+  <link rel="apple-touch-icon-precomposed" href="{{ request.static_path('feedduty:static/images/touch-icon-57.png') }}">
+  <link rel="stylesheet" href="{{ request.static_path('feedduty:static/css/bootstrap.min.css') }}" media="screen">
+  <link rel="stylesheet" href="{{ request.static_path('feedduty:static/css/api.css') }}" media="screen">
+</head>
+<body>
+<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Feed Duty API</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+
+      <ul class="nav navbar-nav">
+        <li><a href="{{ request.route_path('api.main') }}">Home</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="{{ request.route_path('collection_feedresource') }}">Feed</a></li>
+            <li><a href="{{ request.route_path('collection_tagresource') }}">Tag</a></li>
+            <li><a href="{{ request.route_path('collection_userresource') }}">User</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Signed in as Bastian Kuberek <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="#"></a></li>
+            <li><a href="/logout?next=/api">Log Out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <!-- /.navbar-collapse -->
+  </div>
+</nav>
+<div class="container">
+  <ul class="breadcrumb">
+    {%- for comp in request.path.strip('/').split('/') %}
+    {% if comp == 'api' %}
+    <li><a href="{{ request.route_path('api.main') }}">API Root</a></li>
+    {% elif loop.last %}
+    <li class="active">{{ request.matched_route.name|replace('collection_', '')|replace('resource', '') }}</li>
+    {% else %}
+    <li><a href="{{ request.route_path('api.main') }}">{{ comp }}</a></li>
+    {% endif %}
+    {%- endfor %}
+  </ul>
+  <h1>{{ request.matched_route.name|replace('collection_', '')|replace('resource', '')|title }}</h1>
+  <h4>Request</h4>
+    <pre>{{ request.http_version }} {{ request.method }} {{ request.path }}
+{%- for header in request.headers.items() %}
+{{ header[0] }}: {{ header[1] }}
+{%- endfor %}</pre>
+  <h4>Response</h4>
+<pre>{{ request.response.status }}
+{%- for header in request.response.headers.items() %}
+{{ header[0] }}: {{ header[1] }}
+{%- endfor %}</pre>
+  {% block content %}{% endblock %}
+</div>
+
+<script src="{{ request.static_path('feedduty:static/js/lib/jquery/jquery-2.0.3.min.js') }}"></script>
+<script src="{{ request.static_path('feedduty:static/js/lib/bootstrap/bootstrap.min.js') }}"></script>
+</body>
+</html>
