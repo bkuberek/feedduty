@@ -10,14 +10,19 @@ from feedduty.models import (
 
 from feedduty.serializers import FeedJsonSerializer
 from feedduty.forms import FeedForm
+from pyramid.settings import asbool
+
 
 @resource(collection_path='/api/feed', path='/api/feed/{id}')
 class FeedResource(object):
     def __init__(self, request):
         self.request = request
         self.serializer = FeedJsonSerializer()
+        self.render_json = asbool(self.request.content_type in ('text/json', 'application/json'))
+        if self.render_json:
+            self.request.override_renderer = 'json'
 
-    @view(renderer='api/collection.html')
+    @view(renderer='api/content.html')
     def collection_get(self):
         """
         List feeds - Only accepts GET requests on the collection URI
@@ -25,16 +30,13 @@ class FeedResource(object):
         """
 
         feeds = DBSession.query(Feed).filter()
-        resp = {'success': True}
+        json_response = {'success': True, 'result': [self.serializer.serialize(f) for f in feeds]}
 
-        if self.request.content_type in ('text/json', 'application/json'):
-            resp['result'] = [self.serializer.serialize(f) for f in feeds]
+        if self.render_json:
+            resp = json_response
         else:
-            resp['result'] = [self.serializer.serialize(f) for f in feeds]
-
-            # embed the response
-            resp = {'response': json.dumps(resp, indent=2)}
-
+            # embed the response for the HTML templates
+            resp = {'json_response': json.dumps(json_response, indent=2)}
             resp['form'] = FeedForm()
 
         return resp
@@ -60,14 +62,23 @@ class FeedResource(object):
 
         return resp
 
-    @view(renderer='json')
+    @view(renderer='api/content.html')
     def get(self):
         """
         Retrieve a feed
         """
         feed = DBSession.query(Feed).get(int(self.request.matchdict['id']))
 
-        return {'success': True, 'result': self.serializer.serialize(feed)}
+        json_response = {'success': True, 'result': self.serializer.serialize(feed)}
+
+        if self.render_json:
+            resp = json_response
+        else:
+            # embed the response for the HTML templates
+            resp = {'json_response': json.dumps(json_response, indent=2)}
+            resp['form'] = FeedForm()
+
+        return resp
 
     @view(renderer='json')
     def put(self):

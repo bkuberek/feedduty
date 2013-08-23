@@ -12,21 +12,6 @@ from feedduty.models import (
     BaseModel,
     )
 
-# __version__ = VERSION = (0, 1, 0, 'dev', 0)
-#
-#
-# def get_version():
-#     """ Return the current version"""
-#     version = '%s.%s' % (VERSION[0], VERSION[1])
-#     if VERSION[2]:
-#         version = '%s.%s' % (version, VERSION[2])
-#     if VERSION[3:] == ('alpha', 0):
-#         version = '%s pre-alpha' % version
-#     else:
-#         if VERSION[3] != 'final':
-#             version = '%s %s %s' % (version, VERSION[3], VERSION[4])
-#     return version
-
 
 def _datetime_adapter(obj, request):
     return obj.isoformat()
@@ -46,10 +31,6 @@ def main(global_config, **settings):
 
     # Configure extensions
     config.add_jinja2_search_path("feedduty:templates")
-
-    # tweens (middleware)
-    # config.add_tween('feedduty.tweens.timing_tween_factory')
-    # config.add_tween('feedduty.tweens.api_response_tween_factory', under=pyramid.tweens.MAIN)
 
     # Configure renderers
     # Configure JSON renderer to understand certain objects

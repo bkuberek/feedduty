@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright © 2013 Bastian Kuberek
+import json
 
 from cornice.resource import resource, view
 
@@ -10,12 +11,17 @@ from feedduty.models import (
 
 from feedduty.serializers import TagJsonSerializer
 from feedduty.forms import TagForm
+from pyramid.settings import asbool
+
 
 @resource(collection_path='/api/tag', path='/api/tag/{id}')
 class TagResource(object):
     def __init__(self, request):
         self.request = request
         self.serializer = TagJsonSerializer()
+        self.render_json = asbool(self.request.content_type in ('text/json', 'application/json'))
+        if self.render_json:
+            self.request.override_renderer = 'json'
 
     @view(renderer='json')
     def collection_get(self):
@@ -25,7 +31,16 @@ class TagResource(object):
         """
         tags = DBSession.query(Tag)
 
-        return {'success': True, 'result': [self.serializer.serialize(d) for d in tags]}
+        json_response = {'success': True, 'result': [self.serializer.serialize(t) for t in tags]}
+
+        if self.render_json:
+            resp = json_response
+        else:
+            # embed the response for the HTML templates
+            resp = {'json_response': json.dumps(json_response, indent=2)}
+            resp['form'] = TagForm()
+
+        return resp
 
     @view(renderer='json')
     def collection_post(self):
@@ -55,7 +70,16 @@ class TagResource(object):
         """
         tag = DBSession.query(Tag).get(int(self.request.matchdict['id']))
 
-        return {'success': True, 'result': self.serializer.serialize(tag)}
+        json_response = {'success': True, 'result': self.serializer.serialize(tag)}
+
+        if self.render_json:
+            resp = json_response
+        else:
+            # embed the response for the HTML templates
+            resp = {'json_response': json.dumps(json_response, indent=2)}
+            resp['form'] = TagForm()
+
+        return resp
 
     @view(renderer='json')
     def put(self):

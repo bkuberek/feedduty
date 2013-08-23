@@ -6,6 +6,7 @@ from setuptools import setup, find_packages
 here = os.path.abspath(os.path.dirname(__file__))
 README = open(os.path.join(here, 'README.md')).read()
 CHANGES = open(os.path.join(here, 'CHANGES.md')).read()
+LICENSE = open(os.path.join(here, 'LICENSE')).read()
 
 requires = open(os.path.join(here, 'requirements.txt')).readlines()
 
@@ -14,6 +15,7 @@ setup(
     version='0.1.0-dev',
     description='Feed Duty',
     long_description=README + '\n\n' + CHANGES,
+    license=LICENSE,
     classifiers=[
         "Programming Language :: Python",
         "Framework :: Pyramid",

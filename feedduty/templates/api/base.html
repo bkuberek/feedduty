@@ -59,29 +59,7 @@
     <!-- /.navbar-collapse -->
   </div>
 </nav>
-<div class="container">
-  <ul class="breadcrumb">
-    {%- for comp in request.path.strip('/').split('/') %}
-    {% if comp == 'api' %}
-    <li><a href="{{ request.route_path('api.main') }}">API Root</a></li>
-    {% elif loop.last %}
-    <li class="active">{{ request.matched_route.name|replace('collection_', '')|replace('resource', '') }}</li>
-    {% else %}
-    <li><a href="{{ request.route_path('api.main') }}">{{ comp }}</a></li>
-    {% endif %}
-    {%- endfor %}
-  </ul>
-  <h1>{{ request.matched_route.name|replace('collection_', '')|replace('resource', '')|title }}</h1>
-  <h4>Request</h4>
-    <pre>{{ request.http_version }} {{ request.method }} {{ request.path }}
-{%- for header in request.headers.items() %}
-{{ header[0] }}: {{ header[1] }}
-{%- endfor %}</pre>
-  <h4>Response</h4>
-<pre>{{ request.response.status }}
-{%- for header in request.response.headers.items() %}
-{{ header[0] }}: {{ header[1] }}
-{%- endfor %}</pre>
+<div id="api-content" class="container">
   {% block content %}{% endblock %}
 </div>
 
