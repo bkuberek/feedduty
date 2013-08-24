@@ -3,7 +3,6 @@
 import datetime
 from pyramid.config import Configurator
 from pyramid.renderers import JSON
-import pyramid.tweens
 from pyramid_jinja2 import renderer_factory as jinja2_renderer
 from sqlalchemy import engine_from_config
 
@@ -30,7 +29,8 @@ def main(global_config, **settings):
     config = Configurator(settings=settings)
 
     # Configure extensions
-    config.add_jinja2_search_path("feedduty:templates")
+    config.add_jinja2_search_path("feedduty:api/templates")
+    config.add_jinja2_search_path("feedduty:web/templates")
 
     # Configure renderers
     # Configure JSON renderer to understand certain objects
@@ -44,13 +44,14 @@ def main(global_config, **settings):
     config.add_static_view('static', 'feedduty:static', cache_max_age=3600)
 
     # API Routing configuration
-    config.add_route('api.main', '/api')
+    config.add_route('api_main', '/api')
 
     # Catch all route - loads the web app
     config.add_route('app', '/')
 
     # scan for view handlers
-    config.scan('feedduty.views')
+    config.scan('feedduty.api.views')
+    config.scan('feedduty.web.views')
 
     # return a uwsgi compatible app
     return config.make_wsgi_app()

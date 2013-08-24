@@ -29,7 +29,7 @@ class TestMyView(unittest.TestCase):
         testing.tearDown()
 
     def test_it(self):
-        from feedduty.views import my_view
+        from feedduty.web.views import my_view
         request = testing.DummyRequest()
         info = my_view(request)
         self.assertEqual(info['one'].name, 'one')

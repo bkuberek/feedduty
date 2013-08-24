@@ -1,6 +1,6 @@
 /**
  * main.js
- * Copyright: © 2013 Spotify AB
+ * Copyright: © 2013 Bastian Kuberek
  */
 
 

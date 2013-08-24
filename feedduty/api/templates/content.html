@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<ul class="breadcrumb">
+  {%- for comp in request.path.strip('/').split('/') %}
+  {% if comp == 'api' %}
+  <li><a href="{{ request.route_path('api_main') }}">API Root</a></li>
+  {% elif loop.last %}
+  <li class="active">{{ request.path.strip('/').split('/')[-1:][0] }}</li>
+  {% else %}
+  <li><a href="{{ request.route_path('api_main') }}/{{ comp }}">{{ comp }}</a></li>
+  {% endif %}
+  {%- endfor %}
+</ul>
+<h1>{{ request.matched_route.name|replace('collection_', '')|replace('resource', '')|title }}</h1>
+<h4>Request</h4>
+<pre>{{ request.http_version }} {{ request.method }} {{ request.path }}
+{%- for header in request.headers.items() %}
+{{ header[0] }}: {{ header[1] }}
+{%- endfor %}</pre>
+<h4>Response</h4>
+<pre>{{ request.response.status }}
+{%- for header in request.response.headers.items() %}
+{{ header[0] }}: {{ header[1] }}
+{%- endfor %}</pre>
+<pre>{{ json_response }}</pre>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">
+      {% if request.matched_route.name.startswith('collection') %}
+      Create a new record
+      {% else %}
+      Edit this record
+      {% endif %}
+    </h3>
+  </div>
+  {% if form %}
+  <div class="panel-body">
+    <form id="api-form" role="form">
+      {%- for field in form %}
+      <div class="form-group">
+        {{ field.label }}
+        {{ field(class='form-control') }}
+      </div>
+      {%- endfor %}
+      {% if request.matched_route.name.startswith('collection') %}
+      <button type="submit" data-method="post" class="btn btn-default btn-primary">Create</button>
+      {% else %}
+      <button type="submit" data-method="put" class="btn btn-default btn-primary">Update</button>
+      <button type="submit" data-method="delete" class="btn btn-default btn-danger">Delete</button>
+      {% endif %}
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="api-response-modal" tabindex="-1" role="dialog" aria-labelledby="api-response" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title">API Response</h4>
+        </div>
+        <div class="modal-body">
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary reload">Reload Page</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+  {% endif %}
+</div>
+{% endblock %}
