@@ -7,7 +7,7 @@ Regular forms use WTForms http://wtforms.simplecodes.com/docs/1.0.4/
 Model CRUD/search forms use WTForms-Alchemy http://wtforms-alchemy.readthedocs.org/en/latest/
 """
 from wtforms import Form
-from wtforms_alchemy import model_form_factory
+from wtforms_alchemy import model_form_factory, ModelFormField, ModelFieldList
 from wtforms.validators import Email, URL
 from feedduty.models import (
     DBSession,
@@ -40,16 +40,19 @@ class UserForm(ModelForm):
         validators = {'email': [Email()]}
 
 
+class TagForm(ModelForm):
+    class Meta:
+        model = Tag
+
+
 class FeedForm(ModelForm):
     class Meta:
         model = Feed
         exclude = ['created_at', 'updated_at']
         validators = {'url': [URL()]}
 
-
-class TagForm(ModelForm):
-    class Meta:
-        model = Tag
+    # user = ModelFormField(UserForm)
+    # tags = ModelFieldList(ModelFormField(TagForm))
 
 
 # Filter Forms

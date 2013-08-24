@@ -94,10 +94,13 @@ class JsonSerializer(object):
         """
         d = dict()
         for attr in self.__attributes__:
+
             val = getattr(obj, attr)
             if val is None:
                 continue
+
             serializer = self.__attribute_serializer__.get(attr)
+
             if serializer:
                 d[attr] = self.serializers[serializer]['serialize'](val)
             else:

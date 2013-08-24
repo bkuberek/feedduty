@@ -96,6 +96,19 @@ class User(BaseModel):
     def __repr__(self):
         return "<User(username='%s', email='%s')>" % (self.username, self.email)
 
+    def __json__(self, request):
+        return {
+            'user_id': self.user_id,
+            'username': self.username,
+            'email': self.email,
+            'first_name': self.first_name,
+            'last_name': self.last_name,
+            'last_login': self.last_login.isoformat() if self.last_login else None,
+            'settings': self.settings,
+            'feeds': [f.feed_id for f in self.feeds],
+            'tags': [t.tag_id for t in self.tags],
+        }
+
 
 class Feed(BaseModel):
     """
@@ -137,6 +150,19 @@ class Feed(BaseModel):
         BaseModel.__init__(self)
         self.created_at = datetime.now()
 
+    def __json__(self, request):
+        return {
+            'feed_id': self.feed_id,
+            'user_id': self.user_id,
+            'name': self.name,
+            'description': self.description,
+            'settings': self.settings,
+            'url': self.url,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'tags': [t.tag_id for t in self.tags],
+        }
+
 
 class Tag(BaseModel):
     """
@@ -155,6 +181,12 @@ class Tag(BaseModel):
 
     def __repr__(self):
         return "<Tag(tag_id=%s, name='%s')>" % (self.tag_id, self.name)
+
+    def __json__(self, request):
+        return {
+            'tag_id': self.tag_id,
+            'name': self.name,
+        }
 
 
 class FeedTagLookup(BaseModel):
